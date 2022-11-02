@@ -1,0 +1,18 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:if="${param.error}">
+    Invalid Token.
+</div>
+</br>
+<form action="/mfa" method="post">
+    Token <input type="text" value="" name="token"/>
+    <input name="uuid" type="hidden" th:value="${param.uuid}"/>
+    <input type="submit" value="verify"/>
+</form>
+</body>
+</html>
