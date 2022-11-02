@@ -24,7 +24,6 @@ import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 
@@ -52,6 +51,7 @@ public class ClientController {
     @Autowired
     Environment environment;
 
+    @SuppressWarnings("SameParameterValue")
     private boolean isMyProfileActive(String profile) {
         for (final String profileName : environment.getActiveProfiles()) {
             if (profile.equals(profileName)) return true;
@@ -78,30 +78,13 @@ public class ClientController {
         return model;
     }
 
-//    @RequestMapping(value = "/client-articles", method = RequestMethod.GET)
-//    public ModelAndView articles(HttpServletRequest request) {
-//        return getDisplayModel(request);
-//    }
-//
-//    @RequestMapping(value = "/co-me", method = RequestMethod.GET)
-//    public ModelAndView consoleOperatorMeDetails(HttpServletRequest request) {
-//        return getDisplayModel(request);
-//    }
-
     @RequestMapping(value = "/display", method = RequestMethod.GET)
     public ModelAndView displaySecureDetails(HttpServletRequest request) {
         return getDisplayModel(request);
     }
 
-
-//    @RequestMapping(value = "/demo-handler", method = RequestMethod.GET)
-//    public ModelAndView demoHandler(@RequestParam("code") String code, HttpServletRequest httpServletRequest) throws IOException {
-//        fetchTokenAndSetInSession(code, httpServletRequest);
-//        return new ModelAndView(new RedirectView("client-articles"));
-//    }
-
     @RequestMapping(value = "/authorized", method = RequestMethod.GET)
-    public ModelAndView dataManagementHandler(@RequestParam("code") String code, HttpServletRequest httpServletRequest) throws IOException {
+    public ModelAndView dataManagementHandler(@RequestParam("code") String code, HttpServletRequest httpServletRequest) {
         fetchTokenAndSetInSession(code, httpServletRequest);
         return new ModelAndView(new RedirectView("display"));
     }
@@ -124,7 +107,7 @@ public class ClientController {
         return model;
     }
 
-    private void fetchTokenAndSetInSession(String code, HttpServletRequest httpServletRequest) throws IOException {
+    private void fetchTokenAndSetInSession(String code, HttpServletRequest httpServletRequest) {
         try {
             ResponseEntity<String> response;
             System.out.println("Authorization Ccode------" + code);
