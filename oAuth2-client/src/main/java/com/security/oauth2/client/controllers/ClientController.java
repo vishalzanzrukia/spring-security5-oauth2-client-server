@@ -104,6 +104,11 @@ public class ClientController {
 
         ModelAndView model = new ModelAndView("details");
         model.addObject("details", response.getBody());
+
+        //just for testing
+        String refreshToken = (String) request.getSession().getAttribute("refresh_token");
+        getTokenUsingRefreshToken(refreshToken);
+
         return model;
     }
 
@@ -143,9 +148,8 @@ public class ClientController {
             String token = node.path("access_token").asText();
             String refreshToken = node.path("refresh_token").asText();
 
-            getTokenUsingRefreshToken(refreshToken);
-
             httpServletRequest.getSession().setAttribute("access_token", token);
+            httpServletRequest.getSession().setAttribute("refresh_token", refreshToken);
         } catch (Exception e) {
             e.printStackTrace();
         }
