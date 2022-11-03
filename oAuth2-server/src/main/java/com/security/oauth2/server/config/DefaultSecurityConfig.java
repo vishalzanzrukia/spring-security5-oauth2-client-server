@@ -39,15 +39,4 @@ public class DefaultSecurityConfig {
         return new InMemoryUserDetailsManager(user);
     }
 
-    @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.mvcMatcher("/articles/**")
-                .authorizeRequests()
-                .mvcMatchers("/articles/**").permitAll()
-                .and()
-                .oauth2ResourceServer()
-                .jwt();
-        return http.build();
-    }
-
 }

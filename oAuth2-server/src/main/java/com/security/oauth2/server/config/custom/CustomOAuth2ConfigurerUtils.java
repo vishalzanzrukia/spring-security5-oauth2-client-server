@@ -55,7 +55,7 @@ public final class CustomOAuth2ConfigurerUtils {
 	private CustomOAuth2ConfigurerUtils() {
 	}
 
-	static <B extends HttpSecurityBuilder<B>> RegisteredClientRepository getRegisteredClientRepository(B builder) {
+	public static <B extends HttpSecurityBuilder<B>> RegisteredClientRepository getRegisteredClientRepository(B builder) {
 		RegisteredClientRepository registeredClientRepository = builder.getSharedObject(RegisteredClientRepository.class);
 		if (registeredClientRepository == null) {
 			registeredClientRepository = getBean(builder, RegisteredClientRepository.class);
@@ -196,7 +196,7 @@ public final class CustomOAuth2ConfigurerUtils {
 		throw new NoSuchBeanDefinitionException(type);
 	}
 
-	static <B extends HttpSecurityBuilder<B>, T> T getOptionalBean(B builder, Class<T> type) {
+	public static <B extends HttpSecurityBuilder<B>, T> T getOptionalBean(B builder, Class<T> type) {
 		Map<String, T> beansMap = BeanFactoryUtils.beansOfTypeIncludingAncestors(
 				builder.getSharedObject(ApplicationContext.class), type);
 		if (beansMap.size() > 1) {
