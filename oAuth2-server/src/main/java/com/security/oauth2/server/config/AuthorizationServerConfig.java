@@ -125,7 +125,6 @@ public class AuthorizationServerConfig extends OAuth2AuthorizationServerConfigur
         if (passwordEncoder != null) {
             clientSecretAuthenticationProvider.setPasswordEncoder(passwordEncoder);
         }
-        authorizationServerConfigurer.clientAuthentication(clientAuth -> clientAuth.authenticationProvider(clientSecretAuthenticationProvider));
 
         http
                 .requestMatcher(endpointsMatcher)
@@ -159,6 +158,7 @@ public class AuthorizationServerConfig extends OAuth2AuthorizationServerConfigur
         authorizationServerConfigurer.clientAuthentication(clientAuth ->
         {
             clientAuth.authenticationConverter(delegatingAuthenticationConverter);
+            clientAuth.authenticationProvider(clientSecretAuthenticationProvider);
         });
         return http.cors().and().formLogin().loginPage("/login").permitAll().and().build();
     }

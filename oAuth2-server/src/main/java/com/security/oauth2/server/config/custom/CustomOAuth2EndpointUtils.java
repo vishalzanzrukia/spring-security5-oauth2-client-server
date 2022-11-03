@@ -64,7 +64,7 @@ final class CustomOAuth2EndpointUtils {
         return parameters;
     }
 
-    //Modified this method to allow refresh_token request as well for pkce
+    //CUSTOM CHANGE ::Modified this method to allow refresh_token request as well for pkce
     static boolean matchesAuthorizationCodeGrantRequest(HttpServletRequest request) {
         return (AuthorizationGrantType.AUTHORIZATION_CODE.getValue().equals(
                 request.getParameter(OAuth2ParameterNames.GRANT_TYPE)) &&

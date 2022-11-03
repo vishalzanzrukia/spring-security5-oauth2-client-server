@@ -86,7 +86,7 @@ final class CustomCodeVerifierAuthenticator {
                     AUTHORIZATION_CODE_TOKEN_TYPE);
         }
 
-        //fetch OAuth2Authorization object using refresh_token
+        //CUSTOM CHANGE :: fetch OAuth2Authorization object using refresh_token
         if (AuthorizationGrantType.REFRESH_TOKEN.getValue().equals(
                 parameters.get(OAuth2ParameterNames.GRANT_TYPE)) &&
                 parameters.get(OAuth2ParameterNames.REFRESH_TOKEN) != null) {
@@ -120,7 +120,7 @@ final class CustomCodeVerifierAuthenticator {
         return true;
     }
 
-    //Modified this method to allow refresh_token request as well for pkce
+    //CUSTOM CHANGE ::  Modified this method to allow refresh_token request as well for pkce
     private static boolean authorizationCodeGrant(Map<String, Object> parameters) {
         return (AuthorizationGrantType.AUTHORIZATION_CODE.getValue().equals(
                 parameters.get(OAuth2ParameterNames.GRANT_TYPE)) &&
