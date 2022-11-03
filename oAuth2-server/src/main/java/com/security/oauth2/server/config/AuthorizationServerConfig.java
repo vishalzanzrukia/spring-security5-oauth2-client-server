@@ -144,7 +144,6 @@ public class AuthorizationServerConfig extends OAuth2AuthorizationServerConfigur
                         new JwtClientAssertionAuthenticationConverter(),
                         new ClientSecretBasicAuthenticationConverter(),
                         new ClientSecretPostAuthenticationConverter(),
-                        new PublicClientAuthenticationConverter(),
                         new CustomPublicClientAuthenticationConverter()));
 
         //this is useful for populating refresh token in the oauth2/token end-point with "code" grant_type
