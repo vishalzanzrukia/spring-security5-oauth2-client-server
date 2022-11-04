@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-//@Component
+//copied from org.springframework.security.oauth2.server.authorization.authentication.OAuth2AuthorizationCodeAuthenticationProvider
 public class CustomOAuth2AuthorizationCodeAuthenticationProvider implements AuthenticationProvider {
     private static final String ERROR_URI = "https://datatracker.ietf.org/doc/html/rfc6749#section-5.2";
     private static final OAuth2TokenType AUTHORIZATION_CODE_TOKEN_TYPE =
@@ -173,9 +173,8 @@ public class CustomOAuth2AuthorizationCodeAuthenticationProvider implements Auth
         //&&
         // Do not issue refresh token to public client
         //!clientPrincipal.getClientAuthenticationMethod().equals(ClientAuthenticationMethod.NONE))
-        //CUSTOM change, removed this condition because we need refresh token even for public clients
+        //CUSTOM CHANGE :: removed this condition because we need refresh token even for public clients
         {
-
             tokenContext = tokenContextBuilder.tokenType(OAuth2TokenType.REFRESH_TOKEN).build();
             OAuth2Token generatedRefreshToken = this.tokenGenerator.generate(tokenContext);
             if (!(generatedRefreshToken instanceof OAuth2RefreshToken)) {

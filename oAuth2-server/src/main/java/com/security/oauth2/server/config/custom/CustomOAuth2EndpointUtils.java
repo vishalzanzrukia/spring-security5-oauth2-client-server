@@ -34,6 +34,8 @@ import java.util.Map;
  * @author Joe Grandja
  * @since 0.1.2
  */
+
+//copied from org.springframework.security.oauth2.server.authorization.web.authentication.OAuth2EndpointUtils
 final class CustomOAuth2EndpointUtils {
     static final String ACCESS_TOKEN_REQUEST_ERROR_URI = "https://datatracker.ietf.org/doc/html/rfc6749#section-5.2";
 
@@ -68,7 +70,9 @@ final class CustomOAuth2EndpointUtils {
     static boolean matchesAuthorizationCodeGrantRequest(HttpServletRequest request) {
         return (AuthorizationGrantType.AUTHORIZATION_CODE.getValue().equals(
                 request.getParameter(OAuth2ParameterNames.GRANT_TYPE)) &&
-                request.getParameter(OAuth2ParameterNames.CODE) != null) || (AuthorizationGrantType.REFRESH_TOKEN.getValue().equals(
+                request.getParameter(OAuth2ParameterNames.CODE) != null) ||
+                //added below OR condition
+                (AuthorizationGrantType.REFRESH_TOKEN.getValue().equals(
                 request.getParameter(OAuth2ParameterNames.GRANT_TYPE)) && request.getParameter(OAuth2ParameterNames.REFRESH_TOKEN) != null);
     }
 

@@ -50,6 +50,9 @@ import java.util.Map;
  * @author Joe Grandja
  * @since 0.1.2
  */
+
+//copied from org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2ConfigurerUtils
+//change required methods access modifiers only (in original class those are visible to package only)
 public final class CustomOAuth2ConfigurerUtils {
 
 	private CustomOAuth2ConfigurerUtils() {

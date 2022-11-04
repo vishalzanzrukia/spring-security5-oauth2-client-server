@@ -50,6 +50,7 @@ public final class CustomPublicClientAuthenticationConverter implements Authenti
     @Nullable
     @Override
     public Authentication convert(HttpServletRequest request) {
+        //CUSTOM CHANGE :: Needed to use custom util class here
         if (!CustomOAuth2EndpointUtils.matchesPkceTokenRequest(request)) {
             return null;
         }

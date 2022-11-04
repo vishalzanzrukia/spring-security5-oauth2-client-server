@@ -16,6 +16,7 @@
 package com.security.oauth2.server.config.custom;
 
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -25,6 +26,7 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.core.endpoint.PkceParameterNames;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AuthorizationCodeAuthenticationToken;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2ClientAuthenticationToken;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.util.Assert;
@@ -48,6 +50,7 @@ import java.util.Map;
  * @see OAuth2AuthorizationService
  * @since 0.2.3
  */
+//copied from org.springframework.security.oauth2.server.authorization.authentication.CodeVerifierAuthenticator
 final class CustomCodeVerifierAuthenticator {
     private static final OAuth2TokenType AUTHORIZATION_CODE_TOKEN_TYPE = new OAuth2TokenType(OAuth2ParameterNames.CODE);
     private static final OAuth2TokenType REFRESH_TOKEN_TYPE = new OAuth2TokenType(OAuth2ParameterNames.REFRESH_TOKEN);
@@ -87,6 +90,7 @@ final class CustomCodeVerifierAuthenticator {
         }
 
         //CUSTOM CHANGE :: fetch OAuth2Authorization object using refresh_token
+        //added this if condition
         if (AuthorizationGrantType.REFRESH_TOKEN.getValue().equals(
                 parameters.get(OAuth2ParameterNames.GRANT_TYPE)) &&
                 parameters.get(OAuth2ParameterNames.REFRESH_TOKEN) != null) {
@@ -94,6 +98,7 @@ final class CustomCodeVerifierAuthenticator {
                     (String) parameters.get(OAuth2ParameterNames.REFRESH_TOKEN),
                     REFRESH_TOKEN_TYPE);
         }
+
         if (authorization == null) {
             throwInvalidGrant(OAuth2ParameterNames.CODE);
         }
@@ -124,7 +129,9 @@ final class CustomCodeVerifierAuthenticator {
     private static boolean authorizationCodeGrant(Map<String, Object> parameters) {
         return (AuthorizationGrantType.AUTHORIZATION_CODE.getValue().equals(
                 parameters.get(OAuth2ParameterNames.GRANT_TYPE)) &&
-                parameters.get(OAuth2ParameterNames.CODE) != null) || (AuthorizationGrantType.REFRESH_TOKEN.getValue().equals(
+                parameters.get(OAuth2ParameterNames.CODE) != null) ||
+                //CUSTOM CHANGE :: added this condition
+                (AuthorizationGrantType.REFRESH_TOKEN.getValue().equals(
                 parameters.get(OAuth2ParameterNames.GRANT_TYPE)) &&
                 parameters.get(OAuth2ParameterNames.REFRESH_TOKEN) != null);
     }

@@ -157,22 +157,21 @@ public class ClientController {
 
     private void getTokenUsingRefreshToken(String refreshToken) {
         try {
-            System.out.println("\n\n\n\n\n\nTrying to get new tokens using refresh token");
+            System.out.println("-------------------->Trying to get new tokens using refresh token<---------------------");
             MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
             body.add("grant_type", "refresh_token");
             body.add("refresh_token", refreshToken);
-            body.add("client_id", clientId);
-            body.add("code_verifier",PkceUtil.codeVerifier);
-
 
             HttpHeaders headers = new HttpHeaders();
 
-            if (!isPkceProfileActive()) {
+            if (isPkceProfileActive()) {
+                body.add("client_id", clientId);
+                System.out.println("codeVerifier:--->" + PkceUtil.codeVerifier);
+                body.add("code_verifier", PkceUtil.codeVerifier);
+            } else {
                 String credentials = clientId + ":" + clientSecret;
                 String encodedCredentials = new String(Base64.encodeBase64(credentials.getBytes()));
                 headers.add("Authorization", "Basic " + encodedCredentials);
-            } else {
-                System.out.println("\n\n\nthis is still not working, fix me!!");
             }
 
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
