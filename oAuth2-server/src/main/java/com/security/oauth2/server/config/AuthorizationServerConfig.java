@@ -4,8 +4,10 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import com.security.oauth2.server.config.custom.CustomClientSecretAuthenticationProvider;
 import com.security.oauth2.server.config.custom.CustomOAuth2AuthorizationCodeAuthenticationProvider;
 import com.security.oauth2.server.config.custom.CustomOAuth2ConfigurerUtils;
+import com.security.oauth2.server.config.custom.CustomPublicClientAuthenticationConverter;
 import com.security.oauth2.server.util.Cache;
 import com.security.oauth2.server.util.OAuthRequest;
 import org.springframework.context.annotation.Bean;
@@ -40,6 +42,7 @@ import org.springframework.security.oauth2.server.authorization.config.ClientSet
 import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
 import org.springframework.security.oauth2.server.authorization.config.TokenSettings;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
+import org.springframework.security.oauth2.server.authorization.web.authentication.*;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -53,11 +56,7 @@ import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Configuration(proxyBeanMethods = false)
 public class AuthorizationServerConfig extends OAuth2AuthorizationServerConfiguration {
@@ -116,18 +115,16 @@ public class AuthorizationServerConfig extends OAuth2AuthorizationServerConfigur
                 new OAuth2AuthorizationServerConfigurer<>();
         RequestMatcher endpointsMatcher = authorizationServerConfigurer
                 .getEndpointsMatcher();
-//        OAuth2AuthorizationService authorizationService = CustomOAuth2ConfigurerUtils.getAuthorizationService(http);
+        OAuth2AuthorizationService authorizationService = CustomOAuth2ConfigurerUtils.getAuthorizationService(http);
 
         //try for making work refresh token
-//        RegisteredClientRepository registeredClientRepository = CustomOAuth2ConfigurerUtils.getRegisteredClientRepository(http);
-//        CustomClientSecretAuthenticationProvider clientSecretAuthenticationProvider =
-//                new CustomClientSecretAuthenticationProvider(registeredClientRepository, authorizationService);
-//        PasswordEncoder passwordEncoder = CustomOAuth2ConfigurerUtils.getOptionalBean(http, PasswordEncoder.class);
-//        if (passwordEncoder != null) {
-//            clientSecretAuthenticationProvider.setPasswordEncoder(passwordEncoder);
-//        }
-//        authorizationServerConfigurer.clientAuthentication(clientAuth -> clientAuth.authenticationProvider(clientSecretAuthenticationProvider));
-
+        RegisteredClientRepository registeredClientRepository = CustomOAuth2ConfigurerUtils.getRegisteredClientRepository(http);
+        CustomClientSecretAuthenticationProvider clientSecretAuthenticationProvider =
+                new CustomClientSecretAuthenticationProvider(registeredClientRepository, authorizationService);
+        PasswordEncoder passwordEncoder = CustomOAuth2ConfigurerUtils.getOptionalBean(http, PasswordEncoder.class);
+        if (passwordEncoder != null) {
+            clientSecretAuthenticationProvider.setPasswordEncoder(passwordEncoder);
+        }
 
         http
                 .requestMatcher(endpointsMatcher)
@@ -141,6 +138,12 @@ public class AuthorizationServerConfig extends OAuth2AuthorizationServerConfigur
                 .authorizationEndpoint(authorizationEndpoint ->
                         authorizationEndpoint.authorizationResponseHandler(this::authorizationResponseHandler)
                 );
+        DelegatingAuthenticationConverter delegatingAuthenticationConverter = new DelegatingAuthenticationConverter(
+                Arrays.asList(
+                        new JwtClientAssertionAuthenticationConverter(),
+                        new ClientSecretBasicAuthenticationConverter(),
+                        new ClientSecretPostAuthenticationConverter(),
+                        new CustomPublicClientAuthenticationConverter()));
 
         //this is useful for populating refresh token in the oauth2/token end-point with "code" grant_type
 //        OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator = CustomOAuth2ConfigurerUtils.getTokenGenerator(http);
@@ -152,6 +155,11 @@ public class AuthorizationServerConfig extends OAuth2AuthorizationServerConfigur
 //                     tokenEndpoint.authenticationProvider(authorizationCodeAuthenticationProvider);
                 });
 
+        authorizationServerConfigurer.clientAuthentication(clientAuth ->
+        {
+            clientAuth.authenticationConverter(delegatingAuthenticationConverter);
+            clientAuth.authenticationProvider(clientSecretAuthenticationProvider);
+        });
         return http.cors().and().formLogin().loginPage("/login").permitAll().and().build();
     }
 

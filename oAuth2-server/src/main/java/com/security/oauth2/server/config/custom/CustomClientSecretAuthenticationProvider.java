@@ -107,7 +107,7 @@ public final class CustomClientSecretAuthenticationProvider implements Authentic
 //			throwInvalidClient(OAuth2ParameterNames.CLIENT_SECRET);
 //		}
 
-		// Validate the "code_verifier" parameter for the confidential client, if available
+		//CUSTOM CHANGE :: Validate the "code_verifier" parameter for the confidential client, if available
 		this.codeVerifierAuthenticator.authenticateIfAvailable(clientAuthentication, registeredClient);
 
 		return new OAuth2ClientAuthenticationToken(registeredClient,

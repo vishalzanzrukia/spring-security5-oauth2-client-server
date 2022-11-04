@@ -161,6 +161,9 @@ public class ClientController {
             MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
             body.add("grant_type", "refresh_token");
             body.add("refresh_token", refreshToken);
+            body.add("client_id", clientId);
+            body.add("code_verifier",PkceUtil.codeVerifier);
+
 
             HttpHeaders headers = new HttpHeaders();
 

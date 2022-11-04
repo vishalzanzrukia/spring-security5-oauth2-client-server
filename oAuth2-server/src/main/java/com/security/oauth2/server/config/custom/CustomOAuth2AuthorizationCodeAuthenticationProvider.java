@@ -55,7 +55,7 @@ public class CustomOAuth2AuthorizationCodeAuthenticationProvider implements Auth
         this.tokenGenerator = tokenGenerator;
     }
 
-    //this method copied from org.springframework.security.oauth2.server.authorization.authentication.OAuth2AuthenticationProviderUtils.getAuthenticatedClientElseThrowInvalidClient
+    //CUSTOM CHANGE :: this method copied from org.springframework.security.oauth2.server.authorization.authentication.OAuth2AuthenticationProviderUtils.getAuthenticatedClientElseThrowInvalidClient
     // because it's visible in the package only
     static OAuth2ClientAuthenticationToken getAuthenticatedClientElseThrowInvalidClient(Authentication authentication) {
         OAuth2ClientAuthenticationToken clientPrincipal = null;
@@ -68,7 +68,7 @@ public class CustomOAuth2AuthorizationCodeAuthenticationProvider implements Auth
         throw new OAuth2AuthenticationException(OAuth2ErrorCodes.INVALID_CLIENT);
     }
 
-    //this method copied from OAuth2AuthenticationProviderUtils.invalidate because it's visible in the package only
+    //CUSTOM CHANGE ::this method copied from OAuth2AuthenticationProviderUtils.invalidate because it's visible in the package only
     static <T extends OAuth2Token> OAuth2Authorization invalidate(
             OAuth2Authorization authorization, T token) {
 
